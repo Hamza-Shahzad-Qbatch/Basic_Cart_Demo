@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/product_api", {
+mongoose.connect("mongodb://localhost:27017/basic_cart_api", {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
