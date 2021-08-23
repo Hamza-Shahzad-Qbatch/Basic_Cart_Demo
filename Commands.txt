@@ -4,7 +4,11 @@ npm install @material-ui/core
 npm install @material-ui/icons
 npm i nodemon
 
-
-
-
-
+npm i axios
+npm install --save react-router-dom
+npm install cors --save
+npm i cors
+npm install react-redux
+npm i @reduxjs/toolkit
+npm i lodash
+npm i redux-logger

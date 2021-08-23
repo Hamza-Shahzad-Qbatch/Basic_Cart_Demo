@@ -26,6 +26,6 @@ const createDocument = async () => {
     }
 }
 
-createDocument();
+//createDocument();
 
 module.exports = Product;

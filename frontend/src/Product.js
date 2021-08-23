@@ -1,11 +1,13 @@
-import React from 'react'
+import React from 'react';
+import Paper from '@material-ui/core/Paper';
 
-function Product() {
+function Product(props) {
     return (
-        <div>
-            
-        </div>
+        <Paper style={{ backgroundColor: '#1b5450', padding: '8px', width: 'fit-content', textAlign: 'center'}} variant="outlined" elevation={15}>
+            <p>Name : {props.product.name}</p>
+            <p>Price : ${props.product.price}</p>
+        </Paper>
     )
 }
 
-export default Product
+export default Product;
