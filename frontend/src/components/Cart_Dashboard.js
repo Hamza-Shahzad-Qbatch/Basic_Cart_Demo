@@ -29,7 +29,7 @@ function Cart_Dashboard() {
 
                 {cart_data && cart_data.map((ele, i) => {
                     return (
-                        <Grid style={{ paddingLeft: '100px', paddingRight: '100px' }} item xs={12} ls={12}>
+                        <Grid key={`cart_${i}`} style={{ paddingLeft: '100px', paddingRight: '100px' }} item xs={12} ls={12}>
                             <CartProduct product={ele} />
                         </Grid>
                     );
