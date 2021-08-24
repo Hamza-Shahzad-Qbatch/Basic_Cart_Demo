@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
-import CartProduct from './CartProduct';
+import CartProduct from './Cart';
 import { Grid } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchCartProducts } from './redux/cartProdHandler';
+import { fetchCartProducts } from '../redux/cartHandler';
 
 function Cart_Dashboard() {
 
-    const { cart_data } = useSelector(state => state.cartReducer);
+    const { cart_data } = useSelector(state => state.cart);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (cart_data.length === 0)
+        //if (cart_data.length === 0)
             dispatch(fetchCartProducts());
     }, [])
 

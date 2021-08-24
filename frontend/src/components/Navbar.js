@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function Navbar() {
-    const { cart_counter } = useSelector(state => state.cartReducer);
+    const { cart_counter } = useSelector(state => state.cart);
 
     return (
         <div>

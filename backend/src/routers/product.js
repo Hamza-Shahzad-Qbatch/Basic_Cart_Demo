@@ -11,15 +11,6 @@ router.get("/products", async (req, res) => {
     }
 })
 
-// router.get("/products/:id", async (req, res) => {
-//     try {
-//         const productData = await Product.findOne({_id: req.params.id});
-//         res.send(productData);
-//     } catch (error) {
-//         res.send(error);
-//     }
-// })
-
 router.post("/products", async (req, res) => {
     try {
         const prod = new Product(req.body);

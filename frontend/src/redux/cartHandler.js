@@ -1,28 +1,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios from '../axios_config';
 const _ = require('lodash');
 
 export const fetchCartProducts = createAsyncThunk(
     'fetch_cart_products',
     async () => {
-        const result = await axios.get('http://localhost:5000/cart_products');
-        return result.data;
+        const { data } = await axios.get('/cart_products');
+        return data;
     }
 );
 
 export const insertCartProduct = createAsyncThunk(
     'insert_cart_product',
     async (id, thunkAPI) => {
-        console.log(id);
+        console.log("Product ID : " + id);
         const config = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             data: { "id": id },
-            url: `http://localhost:5000/cart_product/${id}`
+            url: `/cart_product/${id}`
         };
-        const result = await axios(config);
-        console.log("Data after insertion : " + result.data);
-        return result.data;
+        const { data } = await axios(config);
+        return data;
     }
 );
 
@@ -32,11 +30,10 @@ export const removeCartProduct = createAsyncThunk(
         console.log(id);
         const config = {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            data: { "id": id },
-            url: `http://localhost:5000/del_cart_prod/${id}`
+            //data: { "id": id },
+            url: `/del_cart_prod/${id}`
         };
-        const result = await axios(config);
+        await axios(config);
         return id;
     }
 );
@@ -46,11 +43,10 @@ export const updateCartProdQuantity = createAsyncThunk(
     async (obj, thunkAPI) => {
         const config = {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
             data: { "cart_id": obj.cart_id, "quantity": obj.quantity },
-            url: `http://localhost:5000/update_cart_prod_quantity`
+            url: `/update_cart_prod_quantity`
         };
-        const result = await axios(config);
+        await axios(config);
         return obj;
     }
 );
@@ -74,7 +70,7 @@ export const cartSlice = createSlice({
         [insertCartProduct.fulfilled]: (state, action) => {
             if (action.payload !== "Invalid ID"){
                 const index = _.findIndex(state.cart_data, (ele) => ele.prod_id === action.payload.prod_id );
-                if ( index === -1){
+                if ( index === -1 ){
                     state.cart_data.push(action.payload);
                 }
                 else{

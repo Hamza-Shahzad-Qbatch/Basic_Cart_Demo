@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import Product from './Product';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts } from './redux/prodHandler';
-import { fetchCartProducts, insertCartProduct } from './redux/cartProdHandler';
+import { fetchProducts } from '../redux/prodHandler';
+import { fetchCartProducts } from '../redux/cartHandler';
 
 function Product_Dashboard() {
 
-    const { prod_data } = useSelector(state => state.productReducer);
+    const { prod_data } = useSelector(state => state.product);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -15,16 +15,13 @@ function Product_Dashboard() {
         dispatch(fetchCartProducts());
     }, [])
 
-    const addProdToCart = (id) => {
-        dispatch(insertCartProduct(id));
-    };
 
     return (
         <Grid container style={{ paddingLeft: '25px' }}
             justifyContent="space-evenly"
             alignItems="center">
 
-            <h1>Products</h1>
+            <h1 style={{ marginBottom: '50px' }}>Products</h1>
             <Grid
                 container
                 spacing={10}
@@ -33,10 +30,11 @@ function Product_Dashboard() {
 
                 {prod_data && prod_data.map((ele, i) => {   //prod_data?.map
                     return (
-                        <Grid item xs={2}>
-                            <Product product={ele} />
-                            <Button variant="contained" color="default" onClick={() => addProdToCart(ele._id)}>Add to Cart</Button>
-                        </Grid>
+                        <Paper elevation={24} style={{ display: 'flex', justifyContent: 'center', padding: '10px'}}>
+                            <Grid item xs={10}>
+                                <Product product={ele} />
+                            </Grid>
+                        </Paper>
                     );
                 })}
 

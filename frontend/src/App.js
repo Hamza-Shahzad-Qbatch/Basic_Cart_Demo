@@ -1,9 +1,13 @@
+import dotenv from 'dotenv';
 import React from 'react'
-import Navbar from './Navbar';
-import Error from './Error';
+import Navbar from '../src/components/Navbar';
+import Error from '../src/components/Error';
 import { Route, Switch } from 'react-router-dom';
-import Product_Dashboard from './Product_Dashboard';
-import Cart_Dashboard from './Cart_Dashboard';
+import Product_Dashboard from '../src/components/Product_Dashboard';
+import Cart_Dashboard from '../src/components/Cart_Dashboard';
+//require('dotenv').config();
+
+dotenv.config();
 
 function App() {
   return (

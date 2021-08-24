@@ -1,11 +1,9 @@
 const express = require('express');
 const router = new express.Router();
-const CartProduct = require('../models/cartProducts');
+const CartProduct = require('../models/cart');
 const Product = require('../models/products');
 
 router.get("/cart_products", async (req, res) => {
-    // const data = await CartProduct.find();
-    // res.send(data);
     try {
         const cart_productsData = await CartProduct.find({}, { prod_id: 1, quantity: 1 });
         let data = await Promise.all(cart_productsData.map(async (element) => {
@@ -27,10 +25,10 @@ router.get("/cart_products", async (req, res) => {
 
 router.delete("/del_cart_prod/:id", async (req, res) => {
     try {
+        if (!req.params.id) {
+            return res.status(400).send();
+        }
         const delete_cart_product = await CartProduct.findByIdAndDelete(req.params.id);
-        // if (!req.params.id) {
-        //     return res.status(400).send();
-        // }
         res.send(delete_cart_product);
     } catch (error) {
         res.status(500).send(error);
@@ -40,7 +38,7 @@ router.delete("/del_cart_prod/:id", async (req, res) => {
 router.patch("/update_cart_prod_quantity", async (req, res) => {
     try {
         const { cart_id, quantity } = req.body;
-        const updated_cart_product = await CartProduct.update({ _id: cart_id }, { quantity: quantity });
+        const updated_cart_product = await CartProduct.updateOne({ _id: cart_id }, { quantity: quantity });
         res.send(updated_cart_product);
     } catch (error) {
         res.status(500).send(error);
@@ -60,8 +58,7 @@ router.post("/cart_product/:id", async (req, res) => { //This ID is of product, 
                 res.status(201).send(result);
             }
             else {
-                isExist[0].quantity += 1;
-                const result = await CartProduct.findOneAndUpdate({ prod_id: id }, { quantity: isExist[0].quantity });
+                const result = await CartProduct.findOneAndUpdate({ prod_id: id }, { quantity: isExist[0].quantity + 1 });
                 res.status(201).send(result);
             }
         }
