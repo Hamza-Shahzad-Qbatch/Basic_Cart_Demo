@@ -29,13 +29,13 @@ function CartProduct(props) {
                 justifyContent="space-around">
 
                 <Grid item xs={3}>
-                    <p>Name : {props.product.name}</p>
+                    <p><label style={{fontWeight: 'bolder', color: 'turquoise'}}>Name</label> : {props.product.name}</p>
                 </Grid>
                 <Grid item xs={3}>
-                    Quantity : <input type="number" value={props.product.quantity} min="1" onChange={(e) => update_cart_prod_quantity(e.target.value)} />
+                    <label style={{fontWeight: 'bolder', color: 'turquoise'}}>Quantity</label> : <input type="number" value={props.product.quantity} min="1" onChange={(e) => update_cart_prod_quantity(e.target.value)} />
                 </Grid>
                 <Grid item xs={3}>
-                    <p>Price : ${props.product.price}</p>
+                    <p><label style={{fontWeight: 'bolder', color: 'turquoise'}}>Price</label> : ${props.product.price}</p>
                 </Grid>
                 <Grid item xs={3}>
                     <IconButton color="secondary" onClick={() => delete_cart_prod(props.product.cart_id)}>
