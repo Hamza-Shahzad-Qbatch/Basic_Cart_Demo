@@ -1,9 +1,10 @@
 const express = require('express');
 const router = new express.Router();
+
 const CartProduct = require('../models/cart');
 const Product = require('../models/products');
 
-router.get("/cart_products", async (req, res) => {
+router.get('/cart_products', async (req, res) => {
     try {
         const cart_productsData = await CartProduct.find({}, { prod_id: 1, quantity: 1 });
         let data = await Promise.all(cart_productsData.map(async (element) => {
@@ -19,33 +20,34 @@ router.get("/cart_products", async (req, res) => {
         // db.products.find({ _id: ObjectId("6119fb60990c7b07c4658f97") }, {name: 1, price: 1, _id: 0}).pretty()
         res.send(data);
     } catch (error) {
-        res.send(error);
+        res.send(-1);
     }
 });
 
-router.delete("/del_cart_prod/:id", async (req, res) => {
+router.delete('/del_cart_prod/:id', async (req, res) => {
+    const { id } = req.params;
     try {
-        if (!req.params.id) {
-            return res.status(400).send();
+        if (!id) {
+            return res.status(400).send(-1);
         }
-        const delete_cart_product = await CartProduct.findByIdAndDelete(req.params.id);
+        const delete_cart_product = await CartProduct.findByIdAndDelete(id);
         res.send(delete_cart_product);
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send(-1);
     }
 });
 
-router.patch("/update_cart_prod_quantity", async (req, res) => {
+router.patch('/update_cart_prod_quantity', async (req, res) => {
     try {
         const { cart_id, quantity } = req.body;
         const updated_cart_product = await CartProduct.updateOne({ _id: cart_id }, { quantity: quantity });
         res.send(updated_cart_product);
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send(-1);
     }
 });
 
-router.post("/cart_product/:id", async (req, res) => { //This ID is of product, to add in cart
+router.post('/cart_product/:id', async (req, res) => { //This ID is of product, to add in cart
     try {
         const { id } = req.params;
         const found = await Product.find({ _id: id }).countDocuments() === 1 ? true : false;
@@ -67,7 +69,7 @@ router.post("/cart_product/:id", async (req, res) => { //This ID is of product, 
         }
 
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send(-1);
     }
 });
 

@@ -6,7 +6,7 @@ mongoose.connect(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${proc
     useUnifiedTopology: true,
     useFindAndModify: false
 }).then(() => {
-    console.log("Connection is Successful");
+    console.log('Connection is Successful');
 }).catch((err) => {
-    console.log("No Connection");
+    console.log('No Connection');
 })

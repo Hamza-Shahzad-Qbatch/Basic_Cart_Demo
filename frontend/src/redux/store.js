@@ -1,5 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
+
 import prodHandler from './prodHandler';
 import cartHandler from './cartHandler';
 
