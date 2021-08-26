@@ -5,9 +5,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../redux/prodHandler';
 import { fetchCartProducts } from '../redux/cartHandler';
 import Product from './Product';
+import Prod_Desc from './Prod_Desc';
 
 function Product_Dashboard() {
-    const { prod_data } = useSelector(state => state.product);
+    const { prod_data, current_prod_desc } = useSelector(state => state.product);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -16,33 +17,37 @@ function Product_Dashboard() {
     }, [])
 
     return (
-        <Grid container style={{ paddingLeft: '25px' }}
-            justifyContent='space-evenly'
-            alignItems='center'>
-
-            <h1 style={{ marginBottom: '60px', marginTop: '90px' }}>Products</h1>
-            <Grid
-                container
-                spacing={10}
-                direction='row'
+        <>
+            <Grid container style={{ width: '80%', marginLeft: '2%' }}
+                justifyContent='space-evenly'
                 alignItems='center'>
 
-                {prod_data?.map((ele, i) => {   //prod_data?.map
-                    return (
-                        <Paper elevation={24} key={`prod_${i}`}
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                padding: '10px'
-                            }}>
-                            <Grid item xs={10}>
-                                <Product product={ele} />
-                            </Grid>
-                        </Paper>
-                    );
-                })}
+                <h1 style={{ marginBottom: '50px', marginTop: '90px' }}>Products</h1>
+                <Grid
+                    container
+                    spacing={8}
+                    direction='row'
+                    alignItems='center'>
+
+                    {prod_data?.map((ele, i) => {   //prod_data?.map === (prod_data && prod_data.map)
+                        return (
+                            <Paper elevation={24} key={`prod_${i}`}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    padding: '10px'
+                                }}>
+                                <Grid item xs={10}>
+                                    <Product product={ele} />
+                                </Grid>
+                            </Paper>
+                        );
+                    })}
+                </Grid>
             </Grid>
-        </Grid>
+
+            <Prod_Desc prod_desc = { current_prod_desc } />
+        </>
     )
 }
 

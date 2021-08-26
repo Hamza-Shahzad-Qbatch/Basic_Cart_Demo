@@ -13,7 +13,13 @@ export const fetchProducts = createAsyncThunk(
 export const productSlice = createSlice({
     name: 'product',    
     initialState: {
-        prod_data: []
+        prod_data: [],
+        current_prod_desc: 'No Description'
+    },
+    reducers:{
+        updateCurrentProdId(state, action){
+            state.current_prod_desc = action.payload;
+        }
     },
     extraReducers: {
         [fetchProducts.fulfilled]: (state, action) => {
@@ -22,4 +28,5 @@ export const productSlice = createSlice({
     }
 });
 
+export const { updateCurrentProdId } = productSlice.actions;
 export default productSlice.reducer;
