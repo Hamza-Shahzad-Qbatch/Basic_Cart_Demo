@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 import { Card, Button, Typography } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -8,32 +8,40 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 import { insertCartProduct } from '../redux/cartHandler';
 import { useDispatch } from 'react-redux';
-import { updateCurrentProdId } from '../redux/prodHandler';
-import Prod_Desc from './Prod_Desc';
 import Error from './Error';
 
 function Product(props) {
     const dispatch = useDispatch();
-    let match = useRouteMatch();
+    const { url } = useRouteMatch();
 
     const addProdToCart = (id) => {
         dispatch(insertCartProduct(id));
     };
 
-    const displayProdDesc = (e) => {
-        if (e.target.checked) {
-            const all_prods = document.getElementsByName('prod_description');
-            for (const item in all_prods) {
-                if (all_prods[item].checked && e.target.id !== all_prods[item].id) {
-                    all_prods[item].checked = false;
-                }
-            }
-            dispatch(updateCurrentProdId(props.product.description));
+    const displayProdDesc = (element) => {
+        if (!element.checked) {
+            element.checked = true;
+            element.disabled = false;
         }
         else {
-            dispatch(updateCurrentProdId('No Description'));
+            element.checked = false;
+            element.disabled = true;
         }
-    }
+
+        if (element.checked) {
+            const all_prods = document.getElementsByName('prod_description_check');
+            for (const item in all_prods) {
+                if (all_prods[item].checked && element.id !== all_prods[item].id) {
+                    all_prods[item].checked = false;
+                    all_prods[item].disabled = true;
+                }
+            }
+        }
+        else {
+            element.checked = false;
+            element.disabled = true;
+        }
+    };
 
     return (
         <>
@@ -63,10 +71,12 @@ function Product(props) {
                             <b style={{ color: 'turquoise' }}>${props.product.price}</b>
                         </Typography>
                         <Typography variant='body1' color='textSecondary' component='h3'>
-                            {/* <Link to={`${match.url}/desc`}> */}
-                                <input type='checkbox' name='prod_description' id={`prodId_${props.product._id}`}
-                                    onClick={(e) => displayProdDesc(e)} /><b>Description</b>
-                            {/* </Link> */}
+                            {/* <input type='checkbox' name='prod_description_check' disabled id={`prodId_${props.product._id}`}
+                                onChange={(e) => !e.target.checked ? e.target.checked = true : e.target.checked = false} /> */}
+                            {/* <Link to={`${url}/desc/${props.product._id}`}
+                                onClick={() => displayProdDesc(document.getElementById(`prodId_${props.product._id}`))}>
+                                <b>Description</b>
+                            </Link> */}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
@@ -75,15 +85,6 @@ function Product(props) {
                         onClick={() => addProdToCart(props.product._id)}>Add to Cart</Button>
                 </CardActions>
             </Card>
-
-            {/* <Switch>
-                <Route path={`${match.path}/:desc`}>
-                    <Prod_Desc />
-                </Route>
-                <Route>
-                    <Error />
-                </Route>
-            </Switch> */}
         </>
     )
 }
