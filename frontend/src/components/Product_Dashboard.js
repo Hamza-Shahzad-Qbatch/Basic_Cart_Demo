@@ -5,9 +5,10 @@ import { Route, Link, useRouteMatch } from 'react-router-dom';
 import { CircularProgress, LinearProgress } from '@material-ui/core';
 
 import { fetchProducts } from '../redux/prodHandler';
-import { fetchCartProducts } from '../redux/cartHandler';
+import { fetchUserCart } from '../redux/cartHandler';
 import Product from './Product';
 import Prod_Desc from './Prod_Desc';
+import { setCookie, getCookie } from '../CookieHandler';
 
 function Product_Dashboard() {
     const { prod_data } = useSelector(state => state.product);
@@ -17,7 +18,7 @@ function Product_Dashboard() {
     useEffect(() => {
         setTimeout(() => {
             dispatch(fetchProducts())
-            dispatch(fetchCartProducts());
+            dispatch(fetchUserCart(getCookie('Token')));
         }, 500);
     }, [])
 

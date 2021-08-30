@@ -1,12 +1,12 @@
 const express = require('express');
 const router = new express.Router();
 
-const CartProduct = require('../models/cart');
-const Product = require('../models/products');
+const User = require('../models/user');
 
-router.get('/cart_products', async (req, res) => {
+router.post('/login', async (req, res) => {
+    const { email, pswrd } = req.body;
     try {
-        const cart_productsData = await CartProduct.find({}, { prod_id: 1, quantity: 1 });
+        const cart_productsData = await User.find({}, { prod_id: 1, quantity: 1 });
         let data = await Promise.all(cart_productsData.map(async (element) => {
             const productsData = await Product.find({ _id: element.prod_id }, { name: 1, price: 1, _id: 0 });
             return {

@@ -9,13 +9,19 @@ import CardMedia from '@material-ui/core/CardMedia';
 import { insertCartProduct } from '../redux/cartHandler';
 import { useDispatch } from 'react-redux';
 import Error from './Error';
+import { setCookie, getCookie } from '../CookieHandler';
 
 function Product(props) {
     const dispatch = useDispatch();
     const { url } = useRouteMatch();
 
     const addProdToCart = (id) => {
-        dispatch(insertCartProduct(id));
+        let obj = { p_id: id, u_id: getCookie('Token') };
+        if (!getCookie('Token')) {
+            setCookie('Token', Math.random().toString(36).substring(2));
+            obj.u_id = getCookie('Token');
+        }
+        dispatch(insertCartProduct(obj));
     };
 
     const displayProdDesc = (element) => {
@@ -42,6 +48,8 @@ function Product(props) {
             element.disabled = true;
         }
     };
+
+    // setCookie('Token', Math.random().toString(36).substring(2));
 
     return (
         <>

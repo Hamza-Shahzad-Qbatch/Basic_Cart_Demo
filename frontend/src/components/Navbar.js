@@ -18,6 +18,12 @@ function Navbar() {
                         <NavLink exact activeClassName='active_class' to='/products'>
                             <IconButton color='inherit'>Products</IconButton>
                         </NavLink>
+                        <NavLink exact activeClassName='active_class' to='/login'>
+                            <IconButton color='inherit'>Login</IconButton>
+                        </NavLink>
+                        <NavLink exact activeClassName='active_class' to='/signup'>
+                            <IconButton color='inherit'>SignUp</IconButton>
+                        </NavLink>
 
                         <NavLink exact activeClassName='active_class' to='/cart'>
                             <IconButton color='inherit' style={{ float: 'right' }}>

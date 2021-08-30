@@ -13,13 +13,23 @@ export const fetchCartProducts = createAsyncThunk(
     }
 );
 
+export const fetchUserCart = createAsyncThunk(
+    'fetch_user_cart',
+    async (u_id) => {
+        const result = await axios.get(`/user_cart/${u_id}`);
+        if (result !== -1)
+            return result.data;
+        return result;
+    }
+);
+
 export const insertCartProduct = createAsyncThunk(
     'insert_cart_product',
-    async (id, thunkAPI) => {
+    async ({ p_id, u_id }, thunkAPI) => {
         const config = {
             method: 'POST',
-            data: { id: id },
-            url: `/cart_product/${id}`
+            data: { prod_id: p_id, userId: u_id },
+            url: `/cart_product/${p_id}`
         };
         const result = await axios(config);
         if (result !== -1)
@@ -65,6 +75,16 @@ export const cartSlice = createSlice({
     },
     extraReducers: {
         [fetchCartProducts.fulfilled]: (state, action) => {
+            if (action.payload !== -1) {
+                state.cart_data = action.payload;
+                let sum = 0;
+                state.cart_data.forEach((ele) => {
+                    sum += ele.quantity;
+                });
+                state.cart_counter = sum;
+            }
+        },
+        [fetchUserCart.fulfilled]: (state, action) => {
             if (action.payload !== -1) {
                 state.cart_data = action.payload;
                 let sum = 0;

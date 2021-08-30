@@ -3,7 +3,8 @@ import { Grid } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 
 import CartProduct from './Cart';
-import { fetchCartProducts } from '../redux/cartHandler';
+import { fetchUserCart } from '../redux/cartHandler';
+import { setCookie, getCookie } from '../CookieHandler';
 
 function Cart_Dashboard() {
     const { cart_data } = useSelector(state => state.cart);
@@ -11,7 +12,7 @@ function Cart_Dashboard() {
 
     useEffect(() => {
         //if (cart_data.length === 0)
-        dispatch(fetchCartProducts());
+        dispatch(fetchUserCart(getCookie('Token')));
     }, [])
 
     return (
