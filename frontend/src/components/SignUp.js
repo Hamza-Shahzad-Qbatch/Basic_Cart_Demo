@@ -8,6 +8,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import isEmail from 'validator/lib/isEmail';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { registerUser } from '../redux/userHandler';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,6 +36,41 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  
+  const signUpUser = () => {
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const con_password = document.getElementById('cpassword');
+
+    if (name.value && email.value && password.value && con_password.value) {
+      if (password.value !== con_password.value) {
+        alert("Passwords didn't match !!");
+      }
+      else if (!isEmail(email.value)) {
+        alert('Invalid Email');
+      }
+      else {
+        alert(name.value + ' ' + email.value + ' ' + password.value + ' ' + con_password.value);
+        console.log(name.value);
+        dispatch(registerUser({
+          name: name.value, email: email.value, password: password.value
+        }));
+
+        // name.value = '';
+        // email.value = '';
+        // password.value = '';
+        // con_password.value = '';
+
+        history.push('/login');
+      }
+    }
+    else {
+      alert('Fill all the fields');
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -51,7 +91,7 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
+                id="name"
                 label="Name"
                 autoFocus
               />
@@ -79,12 +119,25 @@ export default function SignUp() {
                 autoComplete="current-password"
               />
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="cpassword"
+                label="Confirm Password"
+                type="password"
+                id="cpassword"
+                autoComplete="confirm-password"
+              />
+            </Grid>
           </Grid>
           <Button
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={() => signUpUser()}
           >
             Sign Up
           </Button>

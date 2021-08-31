@@ -12,13 +12,17 @@ import { setCookie, getCookie } from '../CookieHandler';
 
 function Product_Dashboard() {
     const { prod_data } = useSelector(state => state.product);
+    const { email } = useSelector(state => state.user);
     const dispatch = useDispatch();
     const { path, url } = useRouteMatch();
+    const u_id = email ? email : getCookie('Token') ? getCookie('Token') : null;
 
     useEffect(() => {
         setTimeout(() => {
             dispatch(fetchProducts())
-            dispatch(fetchUserCart(getCookie('Token')));
+            if (u_id){
+                dispatch(fetchUserCart(u_id));
+            }
         }, 500);
     }, [])
 
