@@ -15,26 +15,40 @@ export const fetchCartProducts = createAsyncThunk(
 
 export const fetchUserCart = createAsyncThunk(
     'fetch_user_cart',
-    async (u_id) => {
-        const result = await axios.get(`/user_cart/${u_id}`);
-        if (result !== -1)
+    async (token, { rejectWithValue }) => {
+        const config = {
+            method: 'GET',
+            url: '/user_cart',
+            headers: {
+                authorization: `user_token ${token}`
+            }
+        };
+        try {
+            const result = await axios(config);
             return result.data;
-        return result;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
     }
 );
 
 export const insertCartProduct = createAsyncThunk(
     'insert_cart_product',
-    async ({ p_id, u_id }, thunkAPI) => {
+    async ({ prod_id, token }, { rejectWithValue }) => {
         const config = {
             method: 'POST',
-            data: { prod_id: p_id, userId: u_id },
-            url: `/cart_product/${p_id}`
+            data: { prod_id },
+            headers: {
+                authorization: `user_token ${token}`
+            },
+            url: '/cart_product'
         };
-        const result = await axios(config);
-        if (result !== -1)
+        try {
+            const result = await axios(config);
             return result.data;
-        return result;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
     }
 );
 
@@ -72,6 +86,12 @@ export const cartSlice = createSlice({
     initialState: {
         cart_data: [],
         cart_counter: 0,
+    },
+    reducers: {
+        clearCartState(state) {
+            state.cart_data = [],
+            state.cart_counter = 0
+        }
     },
     extraReducers: {
         [fetchCartProducts.fulfilled]: (state, action) => {
@@ -133,4 +153,5 @@ export const cartSlice = createSlice({
     }
 });
 
+export const { clearCartState } = cartSlice.actions
 export default cartSlice.reducer;

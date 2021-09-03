@@ -35,10 +35,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp() {
+  const { user_register_status, error } = useSelector(state => state.user);
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  
+
   const signUpUser = () => {
     const name = document.getElementById('name');
     const email = document.getElementById('email');
@@ -53,8 +54,6 @@ export default function SignUp() {
         alert('Invalid Email');
       }
       else {
-        alert(name.value + ' ' + email.value + ' ' + password.value + ' ' + con_password.value);
-        console.log(name.value);
         dispatch(registerUser({
           name: name.value, email: email.value, password: password.value
         }));
@@ -63,14 +62,16 @@ export default function SignUp() {
         // email.value = '';
         // password.value = '';
         // con_password.value = '';
-
-        history.push('/login');
       }
     }
     else {
       alert('Fill all the fields');
     }
   };
+
+  if (user_register_status) {
+    history.push('/login');
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -94,6 +95,7 @@ export default function SignUp() {
                 id="name"
                 label="Name"
                 autoFocus
+                value="xyz"
               />
             </Grid>
             <Grid item xs={12}>
@@ -105,6 +107,9 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value="xyz@gmail.com"
+                error={error === 'User Already Exists'}
+                helperText={error === 'User Already Exists' ? 'User Already Exists' : null}
               />
             </Grid>
             <Grid item xs={12}>
@@ -117,6 +122,7 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value="12"
               />
             </Grid>
             <Grid item xs={12}>
@@ -129,6 +135,7 @@ export default function SignUp() {
                 type="password"
                 id="cpassword"
                 autoComplete="confirm-password"
+                value="12"
               />
             </Grid>
           </Grid>

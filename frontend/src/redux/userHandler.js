@@ -15,7 +15,7 @@ export const registerUser = createAsyncThunk(
             const result = await axios(config);
             return result;
         } catch (error) {
-            return rejectWithValue(error.message);
+            return rejectWithValue(error.response.data);
         }
     }
 );
@@ -32,17 +32,24 @@ export const loginUser = createAsyncThunk(
             const result = await axios(config);
             return result.data;
         } catch (error) {
-            return rejectWithValue(error.message);
+            return rejectWithValue(error.response.data);
         }
     }
 );
 
 export const fetchUserData = createAsyncThunk(
     'fetch_user_data',
-    async (email, { rejectWithValue }) => {
-        console.log('Email : ' + email)
+    async (token, { rejectWithValue }) => {
+        console.log('Token : ' + token)
+        const config = {
+            method: 'GET',
+            url: '/user',
+            headers: {
+                authorization: `user_token ${token}`
+            }
+        };
         try {
-            const result = await axios.get(`/user/${email}`);
+            const result = await axios(config);
             console.log('Result : ' + result);
             return result.data;
         } catch (error) {
@@ -59,10 +66,12 @@ export const userSlice = createSlice({
         password: '',
         token: '',
         user_login_status: false,
-        user_register_status: false
+        user_register_status: false,
+        loading: false,
+        error: ''
     },
     reducers: {
-        logoutUser(state) {
+        clearUserState(state) {
             state.name = '',
             state.email = '',
             state.password = '',
@@ -75,13 +84,27 @@ export const userSlice = createSlice({
         [registerUser.fulfilled]: (state, action) => {
             state.user_register_status = true;
         },
+        [registerUser.rejected]: (state, action) => {
+            state.user_register_status = false;
+            state.error = action.payload;
+        },
+        
+        [loginUser.pending]: (state, action) => {
+            state.loading = true;
+        },
         [loginUser.fulfilled]: (state, action) => {
             state.user_login_status = true;
             state.token = action.payload.token;
             state.name = action.payload.name;
             state.email = action.payload.email;
             state.password = action.payload.password;
+            state.loading = false;
         },
+        [loginUser.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        },
+
         [fetchUserData.fulfilled]: (state, action) => {
             state.user_login_status = true;
             state.token = action.payload.token;
@@ -92,5 +115,5 @@ export const userSlice = createSlice({
     }
 });
 
-export const { logoutUser } = userSlice.actions
+export const { clearUserState } = userSlice.actions
 export default userSlice.reducer;

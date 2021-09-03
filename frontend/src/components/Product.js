@@ -15,13 +15,12 @@ function Product(props) {
     const dispatch = useDispatch();
     const { url } = useRouteMatch();
 
-    const addProdToCart = (id) => {
-        let obj = { p_id: id, u_id: getCookie('Token') };
+    const addProdToCart = (prod_id) => {
         if (!getCookie('Token')) {
             setCookie('Token', Math.random().toString(36).substring(2));
-            obj.u_id = getCookie('Token');
         }
-        dispatch(insertCartProduct(obj));
+        
+        dispatch(insertCartProduct({prod_id, token: getCookie('Token')}));
     };
 
     const displayProdDesc = (element) => {

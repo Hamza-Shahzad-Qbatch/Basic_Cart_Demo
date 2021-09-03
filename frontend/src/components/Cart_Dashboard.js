@@ -8,16 +8,14 @@ import { setCookie, getCookie } from '../CookieHandler';
 
 function Cart_Dashboard() {
     const { cart_data } = useSelector(state => state.cart);
-    const { email } = useSelector(state => state.user);
     const dispatch = useDispatch();
-    const u_id = email ? email : getCookie('Token') ? getCookie('Token') : null;
 
     useEffect(() => {
         //if (cart_data.length === 0)
-        if (u_id){
-            dispatch(fetchUserCart(u_id));
+        if (getCookie('Token')) {
+            dispatch(fetchUserCart(getCookie('Token')));
         }
-    }, [u_id])
+    }, [])
 
     return (
         <Grid container

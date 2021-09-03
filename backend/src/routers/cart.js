@@ -3,6 +3,7 @@ const router = new express.Router();
 
 const CartProduct = require('../models/cart');
 const Product = require('../models/products');
+const auth = require('../middleware/auth');
 
 router.get('/cart_products', async (req, res) => {
     try {
@@ -24,8 +25,9 @@ router.get('/cart_products', async (req, res) => {
     }
 });
 
-router.get('/user_cart/:u_id', async (req, res) => {
-    const { u_id } = req.params;
+router.get('/user_cart', auth, async (req, res) => {
+    const { user_email, randomString } = req;
+    const u_id = user_email ? user_email : randomString;
     try {
         const cart_productsData = await CartProduct.find({ userId: u_id }, { prod_id: 1, quantity: 1, userId: 1 });
         let data = await Promise.all(cart_productsData.map(async (element) => {
@@ -69,21 +71,21 @@ router.patch('/update_cart_prod_quantity', async (req, res) => {
     }
 });
 
-router.post('/cart_product/:pid', async (req, res) => { //This ID is of product, to add in cart
+router.post('/cart_product', auth, async (req, res) => {
+    const { prod_id } = req.body;
+    const { user_email, randomString } = req;
+    const userId = user_email ? user_email : randomString;
     try {
-        const { pid } = req.params;
-        const { userId } = req.body;
-        const found = await Product.find({ _id: pid }).countDocuments() === 1 ? true : false;
+        const found = await Product.find({ _id: prod_id }).countDocuments() === 1 ? true : false;
         if (found) {
-            const isExist = await CartProduct.find({ prod_id: pid, userId: userId });
-
+            const isExist = await CartProduct.find({ prod_id, userId });
             if (isExist.length === 0) {
-                const cart_prod = new CartProduct(req.body);
+                const cart_prod = new CartProduct({ prod_id, userId });
                 const result = await cart_prod.save();
                 res.status(201).send(result);
             }
             else {
-                const result = await CartProduct.findOneAndUpdate({ prod_id: pid, userId: userId }, { quantity: isExist[0].quantity + 1 });
+                const result = await CartProduct.findOneAndUpdate({ prod_id, userId }, { quantity: isExist[0].quantity + 1 });
                 res.status(201).send(result);
             }
         }

@@ -5,23 +5,28 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const Cart = require('../models/cart');
+const auth = require('../middleware/auth');
 
 router.post('/login', async (req, res) => {
     const { email, password, old_token_id } = req.body;  //token in header ?
     try {
         const isExist = await User.findOne({ email: email });
         if (!isExist) {
-            return res.status(404).send('User Not Exists');
+            return res.status(403).send('User Not Exists');
         }
 
         if (await bcrypt.compare(password, isExist.password)) {
-            await Cart.updateMany({ userId: old_token_id }, { userId: email })
+            if (old_token_id) {
+                const user = await Cart.find({ userId: email });
+                console.log('User : ' + user);
+                await Cart.updateMany({ userId: old_token_id }, { userId: email })
+            }
 
             const token = jwt.sign(
                 { email },
                 process.env.TOKEN_KEY,
                 {
-                    expiresIn: 450000,
+                    expiresIn: 500,
                 }
             );
             const obj = {
@@ -33,7 +38,7 @@ router.post('/login', async (req, res) => {
             res.status(200).json(obj);
         }
         else {
-            res.status(400).send("Invalid Credentials");
+            res.status(401).send("Invalid Credentials");
         }
 
     } catch (error) {
@@ -65,33 +70,25 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.get('/user/:email', async (req, res) => {
-    const { email } = req.params;
+router.get('/user', auth, async (req, res) => {
+    const { user_email } = req;
     try {
-        const isExist = await User.findOne({ email: email });
+        const isExist = await User.findOne({ email: user_email });
         if (isExist) {
-            console.log('Good Request');
-            const token = jwt.sign(
-                { email },
-                process.env.TOKEN_KEY,
-                {
-                    expiresIn: 450000,
-                }
-            );
             const obj = {
                 name: isExist.name,
                 email: isExist.email,
                 password: isExist.password,
-                token: token
             };
             res.status(200).json(obj);
         }
-        else{
+        else {
             return res.status(404).send('User Not Exists');
         }
     } catch (error) {
         res.status(400).send(error);
     }
+
 });
 
 module.exports = router;

@@ -3,9 +3,8 @@ import { AppBar, Grid, Toolbar, IconButton, Badge } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser } from '../redux/userHandler';
-import jwt_decode from "jwt-decode";
-import isEmail from 'validator/lib/isEmail';
+import { clearUserState } from '../redux/userHandler';
+import { clearCartState } from '../redux/cartHandler';
 
 import { fetchUserData } from '../redux/userHandler';
 import { setCookie, getCookie } from '../CookieHandler';
@@ -17,15 +16,9 @@ function Navbar() {
 
     useEffect(() => {
         const token = getCookie('Token');
-        alert(token);
-        dispatch(fetchUserData(token));
-
-        // if (token) {
-        //     const decoded = jwt_decode(token);
-        //     if (isEmail(decoded.email) && !email) {
-        //         dispatch(fetchUserData(decoded.email));
-        //     }
-        // }
+        if (token.length >= 12) {
+            dispatch(fetchUserData(token));
+        }
     }, []);
 
     return (
@@ -40,7 +33,7 @@ function Navbar() {
                             <IconButton color='inherit'>Products</IconButton>
                         </NavLink>
 
-                        {!email ?
+                        {getCookie('Token') === '' || getCookie('Token').length < 12 ?
                             <>
                                 <NavLink exact activeClassName='active_class' to='/login'>
                                     <IconButton color='inherit'>Login</IconButton>
@@ -50,8 +43,9 @@ function Navbar() {
                                 </NavLink>
                             </>
                             : <NavLink exact activeClassName='active_class' to='/login' onClick={() => {
-                                setCookie();
-                                dispatch(logoutUser());
+                                setCookie('Token', '');
+                                dispatch(clearUserState());
+                                dispatch(clearCartState());
                             }}>
                                 <IconButton color='inherit'>LogOut</IconButton>
                             </NavLink>}
